@@ -62,7 +62,7 @@ spec:
             - name: IMG_PATH
               value: "/data"
             - name: IMG_NAME
-              value: "1.jpg"
+              value: "2.jpg"
           envFrom:
             - configMapRef:
                 name: app-version
