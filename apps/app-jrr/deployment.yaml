@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: s3-pv-jrr
+spec:
+  capacity:
+    storage: 1200Gi # Ignored, required
+  accessModes:
+    - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
+  storageClassName: "" # Required for static provisioning
+  claimRef: # To ensure no other PVCs can claim this PV
+    namespace: app-jrr # Namespace is required even though it's in "default" namespace.
+    name: s3-pvc-jrr # Name of your PVC
+  mountOptions:
+    - region eu-west-1
+    - prefix images/
+    - uid=1000
+    - gid=1000
+    - allow-other
+  csi:
+    driver: s3.csi.aws.com # Required
+    volumeHandle: s3-csi-driver-volume # Must be unique
+    volumeAttributes:
+      bucketName: app-jrr
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s3-pvc-jrr
+  namespace: app-jrr
+spec:
+  accessModes:
+    - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
+  storageClassName: "" # Required for static provisioning
+  resources:
+    requests:
+      storage: 1200Gi # Ignored, required
+  volumeName: s3-pv-jrr # Name of your PV
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-jrr
+  namespace: app-jrr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-jrr
+  template:
+    metadata:
+      labels:
+        app: app-jrr
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: app-jrr
+          image: 676206941382.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
+          env:
+            - name: IMG_PATH
+              value: "/data"
+            - name: IMG_NAME
+              value: "1.jpg"
+          envFrom:
+            - configMapRef:
+                name: app-version
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: s3-pvc-jrr

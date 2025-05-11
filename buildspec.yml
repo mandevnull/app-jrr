@@ -1,0 +1,57 @@
+version: 0.2
+
+env:
+  parameter-store:
+    GITHUB_TOKEN: "/app-jrr/github-token"
+  variables:
+    REPO_URI: 676206941382.dkr.ecr.eu-west-1.amazonaws.com
+    APP_NAME: app-jrr
+    APP_PATH: app-src
+    APP_DEPLOY: apps/app-jrr 
+    APP_REPO: github.com/mandevnull/app-jrr.git
+
+phases:
+  install:
+    commands:
+      - echo "Installing pip:"
+      - apt-get update && apt-get install pip -y
+      - echo "Installing flake8 & kustomize:"
+      - pip install flake8
+      - curl -sLo kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/latest/download/kustomize_v5.6.0_linux_amd64.tar.gz
+      - tar xzf kustomize.tar.gz
+      - mv kustomize /usr/local/bin/
+
+  pre_build:
+    commands:
+      - echo "Linting the code:"
+      - flake8 app-src/ --exit-zero
+
+      - echo "Logging in to Amazon ECR:"
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $REPO_URI
+
+      - echo "Generating version tag:"
+      - export "IMAGE_TAG=${COMMIT_HASH:=latest}"
+
+  build:
+    commands:
+      - echo "Building the Docker image:"
+      - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | head -c 7)
+      - echo "IMAGE_TAG=$IMAGE_TAG"
+      - docker build -t $REPO_URI/$APP_NAME:$IMAGE_TAG $APP_PATH/.
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image to ECR:"
+      - docker push $REPO_URI/$APP_NAME:$IMAGE_TAG
+      - echo "Build and push complete for $APP_NAME:$IMAGE_TAG"
+      - echo "Setting Kustomize image:"
+      - cd $APP_DEPLOY && kustomize edit set image "$REPO_URI/$APP_NAME=$REPO_URI/$APP_NAME:$IMAGE_TAG"
+      - kustomize edit set configmap app-version --from-literal=APP_VERSION=$IMAGE_TAG
+      - git config --global user.email "jrr@example.com"
+      - git config --global user.name "JRR"
+      - git remote set-url origin https://x-access-token:$GITHUB_TOKEN@$APP_REPO
+      - git checkout -b deploy/$CODEBUILD_BUILD_NUMBER
+      - git add kustomization.yaml
+      - git commit -m "Codebuild number $CODEBUILD_BUILD_NUMBER"
+      - git remote -v
+      - git push origin deploy/$CODEBUILD_BUILD_NUMBER
