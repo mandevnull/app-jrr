@@ -46,3 +46,7 @@ The app-jrr application is a basic Python and Flask app that displays the curren
     ├── s3.tf
     └── variables.tf
 ```
+
+Before starting, remember to export the following environment variables:
+**AWS_ACCESS_KEY_ID**, **AWS_SECRET_ACCESS_KEY**, **AWS_DEFAULT_REGION** and review the parameters.
+The infrastructure deployment has not been tested for full one-shot provisioning.
