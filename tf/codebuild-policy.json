@@ -73,12 +73,12 @@
                 "ecr:GetRepositoryPolicy"
             ],
             "Resource": [
-                "arn:aws:kms:eu-west-1:676206941382:key/88ee8a8b-7b0d-4685-9406-7efdd42eb490",
+                "arn:aws:kms:eu-west-1:<AWS_ID>:key/88ee8a8b-7b0d-4685-9406-7efdd42eb490",
                 "arn:aws:s3:::codepipeline-eu-west-1-*",
-                "arn:aws:codebuild:eu-west-1:676206941382:report-group/app-jrr-*",
-                "arn:aws:ecr:eu-west-1:676206941382:repository/app-jrr",
-                "arn:aws:logs:eu-west-1:676206941382:log-group:/aws/codebuild/app-jrr",
-                "arn:aws:logs:eu-west-1:676206941382:log-group:/aws/codebuild/app-jrr:*"
+                "arn:aws:codebuild:eu-west-1:<AWS_ID>:report-group/app-jrr-*",
+                "arn:aws:ecr:eu-west-1:<AWS_ID>:repository/app-jrr",
+                "arn:aws:logs:eu-west-1:<AWS_ID>:log-group:/aws/codebuild/app-jrr",
+                "arn:aws:logs:eu-west-1:<AWS_ID>:log-group:/aws/codebuild/app-jrr:*"
             ]
         }
     ]

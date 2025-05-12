@@ -4,7 +4,7 @@ resource "aws_ssm_parameter" "github_token" {
   description = "GitHub token for app-jrr"
   type        = "SecureString"
   value       = var.github-token
-  key_id      = "arn:aws:kms:eu-west-1:676206941382:key/88ee8a8b-7b0d-4685-9406-7efdd42eb490"
+  key_id      = "arn:aws:kms:eu-west-1:<AWS_ID>:key/88ee8a8b-7b0d-4685-9406-7efdd42eb490"
 
   lifecycle {
     ignore_changes = [value]

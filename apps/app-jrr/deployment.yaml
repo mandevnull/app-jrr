@@ -57,7 +57,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: app-jrr
-          image: 676206941382.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
+          image: <AWS_ID>.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
           env:
             - name: IMG_PATH
               value: "/data"

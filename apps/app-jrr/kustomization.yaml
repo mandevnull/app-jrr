@@ -9,8 +9,8 @@ resources:
 - deployment.yaml
 
 images:
-- name: 676206941382.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
-  newName: 676206941382.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
+- name: <AWS_ID>.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
+  newName: <AWS_ID>.dkr.ecr.eu-west-1.amazonaws.com/app-jrr
   newTag: 32e3e6e
 
 configMapGenerator:
