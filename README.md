@@ -48,5 +48,5 @@ The app-jrr application is a basic Python and Flask app that displays the curren
 ```
 
 Before starting, remember to export the following environment variables:
-**AWS_ACCESS_KEY_ID**, **AWS_SECRET_ACCESS_KEY**, **AWS_DEFAULT_REGION** and review the parameters.
+**AWS_ACCESS_KEY_ID**, **AWS_SECRET_ACCESS_KEY**, **AWS_DEFAULT_REGION** and review the parameters. Also remember to replace **<AWS_ID>** with your actual AWS account ID.
 The infrastructure deployment has not been tested for full one-shot provisioning.
