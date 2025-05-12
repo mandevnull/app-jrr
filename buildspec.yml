@@ -4,7 +4,7 @@ env:
   parameter-store:
     GITHUB_TOKEN: "/app-jrr/github-token"
   variables:
-    REPO_URI: 676206941382.dkr.ecr.eu-west-1.amazonaws.com
+    REPO_URI: <AWS_ID>.dkr.ecr.eu-west-1.amazonaws.com
     APP_NAME: app-jrr
     APP_PATH: app-src
     APP_DEPLOY: apps/app-jrr 
